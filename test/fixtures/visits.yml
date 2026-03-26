@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  url: one
+  ip_address: MyString
+  country: MyString
+  city: MyString
+  visited_at: 2026-03-25 23:23:33
+
+two:
+  url: two
+  ip_address: MyString
+  country: MyString
+  city: MyString
+  visited_at: 2026-03-25 23:23:33
