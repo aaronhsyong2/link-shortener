@@ -5,7 +5,7 @@ class UrlShortenerService
   MAX_RETRIES = 10
 
   def initialize(length: DEFAULT_LENGTH)
-    @length = [length, MAX_LENGTH].min
+    @length = [ length, MAX_LENGTH ].min
   end
 
   def call(target_url:, title: nil)
