@@ -1,0 +1,86 @@
+<% content_for :title, "Report for #{@url.short_code}" %>
+
+<div class="w-full">
+  <h1 class="font-bold text-4xl mb-5">Usage Report</h1>
+
+  <div class="mb-5 space-y-2">
+    <p><strong>Short URL:</strong> <%= short_redirect_url(short_code: @url.short_code) %></p>
+    <p><strong>Target URL:</strong> <%= link_to @url.target_url, safe_url(@url.target_url), target: "_blank", class: "text-blue-600 hover:underline" %></p>
+    <p><strong>Title:</strong> <%= @url.title || "No title available" %></p>
+    <p><strong>Total Clicks:</strong> <%= @total_clicks %></p>
+  </div>
+
+  <h2 class="font-bold text-2xl mt-8 mb-3">Clicks by Country</h2>
+  <% if @visits_by_country.any? %>
+    <table class="min-w-full divide-y divide-gray-200 mb-8">
+      <thead>
+        <tr>
+          <th class="px-4 py-2 text-left font-medium text-gray-500">Country</th>
+          <th class="px-4 py-2 text-left font-medium text-gray-500">Clicks</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <% @visits_by_country.sort_by { |_, count| -count }.each do |country, count| %>
+          <tr>
+            <td class="px-4 py-2"><%= country %></td>
+            <td class="px-4 py-2"><%= count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-500 mb-8">No visits yet.</p>
+  <% end %>
+
+  <h2 class="font-bold text-2xl mt-8 mb-3">Clicks by City</h2>
+  <% if @visits_by_city.any? %>
+    <table class="min-w-full divide-y divide-gray-200 mb-8">
+      <thead>
+        <tr>
+          <th class="px-4 py-2 text-left font-medium text-gray-500">City</th>
+          <th class="px-4 py-2 text-left font-medium text-gray-500">Clicks</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <% @visits_by_city.sort_by { |_, count| -count }.each do |city, count| %>
+          <tr>
+            <td class="px-4 py-2"><%= city %></td>
+            <td class="px-4 py-2"><%= count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-500 mb-8">No visits yet.</p>
+  <% end %>
+
+  <h2 class="font-bold text-2xl mt-8 mb-3">Recent Visits</h2>
+  <% if @visits.any? %>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead>
+        <tr>
+          <th class="px-4 py-2 text-left font-medium text-gray-500">Timestamp</th>
+          <th class="px-4 py-2 text-left font-medium text-gray-500">IP Address</th>
+          <th class="px-4 py-2 text-left font-medium text-gray-500">Country</th>
+          <th class="px-4 py-2 text-left font-medium text-gray-500">City</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <% @visits.each do |visit| %>
+          <tr>
+            <td class="px-4 py-2"><%= visit.visited_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td class="px-4 py-2"><%= visit.ip_address %></td>
+            <td class="px-4 py-2"><%= visit.country %></td>
+            <td class="px-4 py-2"><%= visit.city %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-500">No visits yet.</p>
+  <% end %>
+
+  <div class="mt-8">
+    <%= link_to "Back to URL details", url_path(@url), class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  </div>
+</div>

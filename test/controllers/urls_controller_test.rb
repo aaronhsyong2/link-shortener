@@ -17,7 +17,7 @@ class UrlsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create url" do
     assert_difference("Url.count") do
-      post urls_url, params: { url: { clicks_count: @url.clicks_count, short_code: @url.short_code, target_url: @url.target_url, title: @url.title } }
+      post urls_url, params: { url: { target_url: "https://example.org" } }
     end
 
     assert_redirected_to url_url(Url.last)
@@ -26,23 +26,5 @@ class UrlsControllerTest < ActionDispatch::IntegrationTest
   test "should show url" do
     get url_url(@url)
     assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_url_url(@url)
-    assert_response :success
-  end
-
-  test "should update url" do
-    patch url_url(@url), params: { url: { clicks_count: @url.clicks_count, short_code: @url.short_code, target_url: @url.target_url, title: @url.title } }
-    assert_redirected_to url_url(@url)
-  end
-
-  test "should destroy url" do
-    assert_difference("Url.count", -1) do
-      delete url_url(@url)
-    end
-
-    assert_redirected_to urls_url
   end
 end

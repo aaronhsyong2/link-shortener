@@ -1,5 +1,3 @@
-require "net/http"
-
 class UrlMetadataService
   TIMEOUT_SECONDS = 5
   MAX_READ_BYTES = 10_240

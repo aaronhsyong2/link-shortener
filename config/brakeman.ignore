@@ -1,0 +1,26 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "245bfff37e32f73520337fe50699964c40445fe7b88c1e8f55a63d8e291f400c",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/redirects_controller.rb",
+      "line": 7,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(Url.find_by!(:short_code => params[:short_code]).target_url, :allow_other_host => true)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "RedirectsController",
+        "method": "show"
+      },
+      "user_input": "Url.find_by!(:short_code => params[:short_code]).target_url",
+      "confidence": "Weak",
+      "note": "Intentional: URL shortener must redirect to user-provided URLs. target_url is validated as http/https only in Url model."
+    }
+  ],
+  "updated": "2026-03-28",
+  "brakeman_version": "8.0.4"
+}

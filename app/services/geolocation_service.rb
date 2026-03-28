@@ -1,6 +1,3 @@
-require "net/http"
-require "ipaddr"
-
 class GeolocationService
   API_URL = "https://ipinfo.io".freeze
   TIMEOUT_SECONDS = 3

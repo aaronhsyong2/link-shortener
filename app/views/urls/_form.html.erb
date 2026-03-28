@@ -12,26 +12,11 @@
   <% end %>
 
   <div class="my-5">
-    <%= form.label :target_url %>
-    <%= form.text_field :target_url, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": url.errors[:target_url].none?, "border-red-400 focus:outline-red-600": url.errors[:target_url].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :short_code %>
-    <%= form.text_field :short_code, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": url.errors[:short_code].none?, "border-red-400 focus:outline-red-600": url.errors[:short_code].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :title %>
-    <%= form.text_field :title, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": url.errors[:title].none?, "border-red-400 focus:outline-red-600": url.errors[:title].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :clicks_count %>
-    <%= form.number_field :clicks_count, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": url.errors[:clicks_count].none?, "border-red-400 focus:outline-red-600": url.errors[:clicks_count].any?}] %>
+    <%= form.label :target_url, "URL to shorten" %>
+    <%= form.url_field :target_url, placeholder: "https://example.com", class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": url.errors[:target_url].none?, "border-red-400 focus:outline-red-600": url.errors[:target_url].any?}] %>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit "Shorten URL", class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>
