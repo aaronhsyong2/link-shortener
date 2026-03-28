@@ -4,6 +4,14 @@ class UrlMetadataService
   TIMEOUT_SECONDS = 5
   MAX_READ_BYTES = 10_240
 
+  def self.instance
+    @instance ||= new
+  end
+
+  def self.call(...)
+    instance.call(...)
+  end
+
   def call(target_url)
     uri = URI.parse(target_url)
     return nil unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)

@@ -1,0 +1,26 @@
+class RedirectsController < ApplicationController
+  def show
+    url = Url.find_by!(short_code: params[:short_code])
+
+    track_visit(url)
+
+    redirect_to url.target_url, allow_other_host: true
+  rescue ActiveRecord::RecordNotFound
+    render file: Rails.root.join("public/404.html"), status: :not_found, layout: false
+  end
+
+  private
+
+  def track_visit(url)
+    geo = GeolocationService.call(request.remote_ip)
+
+    url.visits.create!(
+      ip_address: request.remote_ip,
+      country: geo[:country],
+      city: geo[:city],
+      visited_at: Time.current
+    )
+
+    url.increment!(:clicks_count)
+  end
+end

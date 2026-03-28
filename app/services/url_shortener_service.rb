@@ -4,6 +4,14 @@ class UrlShortenerService
   MAX_LENGTH = 15
   MAX_RETRIES = 10
 
+  def self.instance(length: DEFAULT_LENGTH)
+    @instance ||= new(length: length)
+  end
+
+  def self.call(**args)
+    instance.call(**args)
+  end
+
   def initialize(length: DEFAULT_LENGTH)
     @length = [ length, MAX_LENGTH ].min
   end

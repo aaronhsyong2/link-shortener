@@ -5,6 +5,14 @@ class GeolocationService
   API_URL = "https://ipinfo.io".freeze
   TIMEOUT_SECONDS = 3
 
+  def self.instance(api_token: nil)
+    @instance ||= new(api_token: api_token)
+  end
+
+  def self.call(...)
+    instance.call(...)
+  end
+
   def initialize(api_token: nil)
     @api_token = api_token || ENV["IPINFO_TOKEN"]
   end
