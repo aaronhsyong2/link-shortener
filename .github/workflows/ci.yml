@@ -85,6 +85,12 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Precompile assets
+        env:
+          RAILS_ENV: test
+          SECRET_KEY_BASE_DUMMY: 1
+        run: bin/rails tailwindcss:build assets:precompile
+
       - name: Run tests
         env:
           RAILS_ENV: test
