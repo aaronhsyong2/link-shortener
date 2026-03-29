@@ -2,42 +2,41 @@
 
 <div class="flex justify-between items-center mb-6">
   <h1 class="text-3xl font-bold text-gray-900">All URLs</h1>
-  <%= link_to "Shorten URL", new_url_path,
-    class: "rounded-lg px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
+  <%= link_to "Shorten URL", new_url_path, class: "btn-primary" %>
 </div>
 
 <% if @urls.any? %>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="card overflow-hidden">
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Short Code</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Target URL</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Title</th>
-          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Clicks</th>
-          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Actions</th>
+          <th class="th">Short Code</th>
+          <th class="th">Target URL</th>
+          <th class="th">Title</th>
+          <th class="th text-right">Clicks</th>
+          <th class="th text-right">Actions</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
         <% @urls.each do |url| %>
           <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4">
+            <td class="td">
               <%= link_to url.short_code, short_redirect_url(short_code: url.short_code),
-                class: "font-mono text-sm text-blue-600 hover:underline" %>
+                class: "font-mono link" %>
             </td>
-            <td class="px-6 py-4 max-w-xs truncate text-sm text-gray-600">
+            <td class="td max-w-xs truncate text-gray-600">
               <%= link_to truncate(url.target_url, length: 50), safe_url(url.target_url),
                 target: "_blank", class: "hover:underline", title: url.target_url %>
             </td>
-            <td class="px-6 py-4 text-sm text-gray-600">
+            <td class="td text-gray-600">
               <%= truncate(url.title || "No title", length: 30) %>
             </td>
-            <td class="px-6 py-4 text-sm text-gray-900 text-right font-medium">
+            <td class="td text-right font-medium">
               <%= url.clicks_count %>
             </td>
-            <td class="px-6 py-4 text-right space-x-2">
-              <%= link_to "Details", url, class: "text-sm text-blue-600 hover:underline" %>
-              <%= link_to "Report", url_report_path(url), class: "text-sm text-blue-600 hover:underline" %>
+            <td class="td text-right space-x-2">
+              <%= link_to "Details", url, class: "text-sm link" %>
+              <%= link_to "Report", url_report_path(url), class: "text-sm link" %>
             </td>
           </tr>
         <% end %>
@@ -45,9 +44,8 @@
     </table>
   </div>
 <% else %>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+  <div class="card p-12 text-center">
     <p class="text-gray-500 mb-4">No URLs shortened yet.</p>
-    <%= link_to "Shorten your first URL", new_url_path,
-      class: "text-blue-600 hover:underline font-medium" %>
+    <%= link_to "Shorten your first URL", new_url_path, class: "link font-medium" %>
   </div>
 <% end %>
