@@ -43,6 +43,12 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Testing framework [https://rspec.info/]
+  gem "rspec-rails"
+
+  # Test data factories [https://github.com/thoughtbot/factory_bot_rails]
+  gem "factory_bot_rails"
 end
 
 group :development do
@@ -54,4 +60,10 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Stub HTTP requests in tests [https://github.com/bblimke/webmock]
+  gem "webmock"
+
+  # Code coverage [https://github.com/simplecov-ruby/simplecov]
+  gem "simplecov", require: false
 end
