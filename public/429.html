@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html class="h-full">
 <head>
-  <title>Something went wrong (500) — LinkShortener</title>
+  <title>Too many requests (429) — LinkShortener</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: system-ui, -apple-system, sans-serif; background: #f9fafb; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
     .card { text-align: center; max-width: 28rem; padding: 3rem 2rem; }
-    .code { font-size: 5rem; font-weight: 800; color: #dc2626; line-height: 1; }
+    .code { font-size: 5rem; font-weight: 800; color: #f59e0b; line-height: 1; }
     h1 { font-size: 1.5rem; font-weight: 700; color: #111827; margin-top: 1rem; }
     p { color: #6b7280; margin-top: 0.5rem; font-size: 0.95rem; }
     a { display: inline-block; margin-top: 1.5rem; padding: 0.6rem 1.5rem; background: #2563eb; color: #fff; border-radius: 0.5rem; text-decoration: none; font-size: 0.875rem; font-weight: 500; }
@@ -16,9 +16,9 @@
 </head>
 <body>
   <div class="card">
-    <div class="code">500</div>
-    <h1>Something went wrong</h1>
-    <p>We're experiencing an issue. Please try again in a moment.</p>
+    <div class="code">429</div>
+    <h1>Too many requests</h1>
+    <p>You've exceeded the rate limit. Please wait a moment and try again.</p>
     <a href="/">Go home</a>
   </div>
 </body>
