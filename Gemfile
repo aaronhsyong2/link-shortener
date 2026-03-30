@@ -22,6 +22,9 @@ gem "tailwindcss-rails"
 # Rate limiting and request throttling [https://github.com/rack/rack-attack]
 gem "rack-attack"
 
+# Pagination [https://github.com/kaminari/kaminari]
+gem "kaminari"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 

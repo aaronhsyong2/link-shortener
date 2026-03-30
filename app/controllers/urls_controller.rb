@@ -3,7 +3,7 @@ class UrlsController < ApplicationController
 
   # GET /urls
   def index
-    @urls = Url.order(created_at: :desc)
+    @urls = Url.order(created_at: :desc).page(params[:page]).per(20)
   end
 
   # GET /urls/1

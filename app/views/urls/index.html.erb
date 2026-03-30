@@ -42,6 +42,11 @@
         <% end %>
       </tbody>
     </table>
+    <% if @urls.total_pages > 1 %>
+      <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-center">
+        <%= paginate @urls %>
+      </div>
+    <% end %>
   </div>
 <% else %>
   <div class="card p-12 text-center">

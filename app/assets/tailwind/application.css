@@ -1,12 +1,16 @@
 @import "tailwindcss";
+@source "../../views/**/*.erb";
+@source "../../javascript/**/*.js";
 
 @layer components {
   .btn-primary {
-    @apply rounded-lg px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition;
+    @apply rounded-lg px-4 py-2 bg-blue-600 text-white text-sm font-medium transition;
+    &:hover { @apply bg-blue-700; }
   }
 
   .btn-secondary {
-    @apply rounded-lg px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium transition;
+    @apply rounded-lg px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium transition;
+    &:hover { @apply bg-gray-50; }
   }
 
   .card {
@@ -26,6 +30,20 @@
   }
 
   .link {
-    @apply text-blue-600 hover:underline;
+    @apply text-blue-600;
+    &:hover { @apply underline; }
+  }
+
+  .page-link {
+    @apply px-3 py-1.5 text-sm rounded-md text-gray-700;
+    &:hover { @apply bg-gray-100; }
+  }
+
+  .page-current {
+    @apply px-3 py-1.5 text-sm rounded-md bg-blue-600 text-white not-italic;
+  }
+
+  .page-gap {
+    @apply px-2 py-1.5 text-sm text-gray-400;
   }
 }

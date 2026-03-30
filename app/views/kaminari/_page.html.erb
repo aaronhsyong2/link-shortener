@@ -1,0 +1,7 @@
+<span class="page<%= ' current' if page.current? %>">
+  <% if page.current? %>
+    <em class="page-current"><%= page %></em>
+  <% else %>
+    <%= link_to page, url, remote: remote, rel: page.rel, class: "page-link" %>
+  <% end %>
+</span>
