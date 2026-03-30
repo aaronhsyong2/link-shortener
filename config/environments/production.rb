@@ -67,8 +67,8 @@ Rails.application.configure do
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
 
-  # Use a real queuing backend for Active Job (and separate queues per environment).
-  config.active_job.queue_adapter = :solid_queue
+  # Solid Queue for dedicated worker; async for single-process deploys (free tier)
+  config.active_job.queue_adapter = ENV.fetch("JOB_ADAPTER", "async").to_sym
   # config.active_job.queue_name_prefix = "link_shortener_production"
 
   # Disable caching for Action Mailer templates even if Action Controller
