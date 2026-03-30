@@ -33,7 +33,7 @@ class UrlsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_url
-      @url = Url.find(params[:id])
+      @url = UrlDecorator.new(Url.find(params[:id]))
     end
 
     # Only allow a list of trusted parameters through.

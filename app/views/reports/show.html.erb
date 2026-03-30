@@ -14,15 +14,15 @@
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
   <div class="card p-5">
     <p class="label">Total Clicks</p>
-    <p class="mt-1 text-3xl font-bold text-gray-900"><%= @total_clicks %></p>
+    <p class="mt-1 text-3xl font-bold text-gray-900"><%= @analytics.total_clicks %></p>
   </div>
   <div class="card p-5">
     <p class="label">Countries</p>
-    <p class="mt-1 text-3xl font-bold text-gray-900"><%= @visits_by_country.size %></p>
+    <p class="mt-1 text-3xl font-bold text-gray-900"><%= @analytics.visits_by_country.size %></p>
   </div>
   <div class="card p-5">
     <p class="label">Title</p>
-    <p class="mt-1 text-sm font-medium text-gray-900 truncate"><%= @url.title || "No title available" %></p>
+    <p class="mt-1 text-sm font-medium text-gray-900 truncate"><%= @url.display_title %></p>
   </div>
 </div>
 
@@ -31,7 +31,7 @@
     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
       <h2 class="text-sm font-semibold text-gray-900">Clicks by Country</h2>
     </div>
-    <% if @visits_by_country.any? %>
+    <% if @analytics.visits_by_country.any? %>
       <table class="min-w-full divide-y divide-gray-200">
         <thead>
           <tr>
@@ -40,7 +40,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <% @visits_by_country.sort_by { |_, count| -count }.each do |country, count| %>
+          <% @analytics.visits_by_country.each do |country, count| %>
             <tr class="hover:bg-gray-50">
               <td class="td"><%= country %></td>
               <td class="td text-right font-medium"><%= count %></td>
@@ -57,7 +57,7 @@
     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
       <h2 class="text-sm font-semibold text-gray-900">Clicks by City</h2>
     </div>
-    <% if @visits_by_city.any? %>
+    <% if @analytics.visits_by_city.any? %>
       <table class="min-w-full divide-y divide-gray-200">
         <thead>
           <tr>
@@ -66,7 +66,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <% @visits_by_city.sort_by { |_, count| -count }.each do |city, count| %>
+          <% @analytics.visits_by_city.each do |city, count| %>
             <tr class="hover:bg-gray-50">
               <td class="td"><%= city %></td>
               <td class="td text-right font-medium"><%= count %></td>
@@ -84,7 +84,7 @@
   <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
     <h2 class="text-sm font-semibold text-gray-900">Recent Visits</h2>
   </div>
-  <% if @visits.any? %>
+  <% if @analytics.recent_visits.any? %>
     <table class="min-w-full divide-y divide-gray-200">
       <thead>
         <tr>
@@ -95,7 +95,7 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
-        <% @visits.each do |visit| %>
+        <% @analytics.recent_visits.each do |visit| %>
           <tr class="hover:bg-gray-50">
             <td class="td text-gray-600 font-mono"><%= visit.visited_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
             <td class="td text-gray-600 font-mono"><%= visit.ip_address %></td>
