@@ -2,15 +2,6 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Urls", type: :request do
   describe "POST /api/v1/urls" do
-    before do
-      stub_request(:get, "https://example.com")
-        .to_return(
-          status: 200,
-          body: "<html><head><title>Example</title></head></html>",
-          headers: { "Content-Type" => "text/html" }
-        )
-    end
-
     it "creates a short URL and returns JSON" do
       post "/api/v1/urls",
         params: { url: { target_url: "https://example.com" } },
@@ -20,10 +11,18 @@ RSpec.describe "Api::V1::Urls", type: :request do
       json = JSON.parse(response.body)
       expect(json["short_code"]).to be_present
       expect(json["target_url"]).to eq("https://example.com")
-      expect(json["title"]).to eq("Example")
+      expect(json["title"]).to be_nil
       expect(json["short_url"]).to include(json["short_code"])
       expect(json["clicks_count"]).to eq(0)
       expect(json["created_at"]).to be_present
+    end
+
+    it "enqueues a title fetch job" do
+      expect {
+        post "/api/v1/urls",
+          params: { url: { target_url: "https://example.com" } },
+          as: :json
+      }.to have_enqueued_job(FetchTitleJob)
     end
 
     it "returns errors for invalid URLs" do

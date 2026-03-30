@@ -17,11 +17,8 @@ class UrlsController < ApplicationController
 
   # POST /urls
   def create
-    title = UrlMetadataService.call(url_params[:target_url])
-    @url = UrlShortenerService.call(
-      target_url: url_params[:target_url],
-      title: title
-    )
+    @url = UrlShortenerService.call(target_url: url_params[:target_url])
+    FetchTitleJob.perform_later(@url.id)
 
     redirect_to @url, notice: "Short URL created successfully."
   rescue ActiveRecord::RecordInvalid => e

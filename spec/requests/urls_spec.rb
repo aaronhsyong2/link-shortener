@@ -24,15 +24,6 @@ RSpec.describe "Urls", type: :request do
   end
 
   describe "POST /urls" do
-    before do
-      stub_request(:get, "https://example.com")
-        .to_return(
-          status: 200,
-          body: "<html><head><title>Example Domain</title></head></html>",
-          headers: { "Content-Type" => "text/html" }
-        )
-    end
-
     it "creates a new url and redirects to show" do
       expect {
         post urls_path, params: { url: { target_url: "https://example.com" } }
@@ -41,9 +32,15 @@ RSpec.describe "Urls", type: :request do
       expect(response).to redirect_to(url_path(Url.last))
     end
 
-    it "fetches the page title" do
+    it "enqueues a title fetch job" do
+      expect {
+        post urls_path, params: { url: { target_url: "https://example.com" } }
+      }.to have_enqueued_job(FetchTitleJob)
+    end
+
+    it "creates url without title (fetched async)" do
       post urls_path, params: { url: { target_url: "https://example.com" } }
-      expect(Url.last.title).to eq("Example Domain")
+      expect(Url.last.title).to be_nil
     end
 
     it "rejects invalid URLs" do

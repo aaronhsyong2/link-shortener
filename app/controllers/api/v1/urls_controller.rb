@@ -2,11 +2,8 @@ module Api
   module V1
     class UrlsController < BaseController
       def create
-        title = UrlMetadataService.call(url_params[:target_url])
-        url = UrlShortenerService.call(
-          target_url: url_params[:target_url],
-          title: title
-        )
+        url = UrlShortenerService.call(target_url: url_params[:target_url])
+        FetchTitleJob.perform_later(url.id)
 
         render json: url_response(url), status: :created
       end

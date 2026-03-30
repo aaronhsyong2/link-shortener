@@ -73,3 +73,5 @@ group :test do
   # Code coverage [https://github.com/simplecov-ruby/simplecov]
   gem "simplecov", require: false
 end
+
+gem "solid_queue", "~> 1.4"
