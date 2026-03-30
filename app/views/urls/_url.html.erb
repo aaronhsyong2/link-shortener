@@ -1,7 +1,7 @@
 <div id="<%= dom_id url %>" class="w-full sm:w-auto my-5 space-y-5">
   <div>
     <strong class="block font-medium mb-1">Short URL:</strong>
-    <%= link_to short_redirect_url(short_code: url.short_code), short_redirect_url(short_code: url.short_code), class: "text-blue-600 hover:underline" %>
+    <%= link_to short_redirect_url(short_code: url.short_code), short_redirect_url(short_code: url.short_code), class: "text-blue-600 hover:underline", target: "_blank", data: { turbo: false } %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Target URL:</strong>

@@ -4,7 +4,7 @@
   <h1 class="text-3xl font-bold text-gray-900">Usage Report</h1>
   <p class="mt-1 text-sm text-gray-500">
     <%= link_to short_redirect_url(short_code: @url.short_code), short_redirect_url(short_code: @url.short_code),
-      class: "font-mono link" %>
+      class: "font-mono link", target: "_blank", data: { turbo: false } %>
     &rarr;
     <%= link_to truncate(@url.target_url, length: 60), safe_url(@url.target_url),
       target: "_blank", class: "link", title: @url.target_url %>
