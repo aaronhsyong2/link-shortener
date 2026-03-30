@@ -90,17 +90,17 @@
         <tr>
           <th class="th">Timestamp</th>
           <th class="th">IP Address</th>
-          <th class="th">Country</th>
-          <th class="th">City</th>
+          <th class="th">Location</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
         <% @analytics.recent_visits.each do |visit| %>
           <tr class="hover:bg-gray-50">
-            <td class="td text-gray-600 font-mono"><%= visit.visited_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
-            <td class="td text-gray-600 font-mono"><%= visit.ip_address %></td>
-            <td class="td"><%= visit.country %></td>
-            <td class="td"><%= visit.city %></td>
+            <td class="td text-gray-600 font-mono">
+              <time datetime="<%= visit.iso_timestamp %>" data-controller="local-time"><%= visit.formatted_timestamp %></time>
+            </td>
+            <td class="td text-gray-600 font-mono"><%= visit.masked_ip %></td>
+            <td class="td"><%= visit.display_location %></td>
           </tr>
         <% end %>
       </tbody>

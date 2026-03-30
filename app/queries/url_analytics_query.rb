@@ -18,6 +18,6 @@ class UrlAnalyticsQuery
   end
 
   def recent_visits(limit: 50)
-    url.visits.order(visited_at: :desc).limit(limit)
+    url.visits.order(visited_at: :desc).limit(limit).map { |v| VisitDecorator.new(v) }
   end
 end
