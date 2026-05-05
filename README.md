@@ -117,6 +117,19 @@ Slugs are generated deterministically from the database record ID using [Sqids](
 
 **Security note:** Sqids provides obfuscation, not encryption. A determined attacker with knowledge of the alphabet could enumerate IDs. This is an accepted tradeoff for a demo project — all shortened URLs are considered public. For production use, a secret shuffled alphabet stored in Rails credentials would prevent casual enumeration.
 
+## Background Jobs
+
+Asynchronous work (e.g. page title fetching) is handled by Active Job with environment-specific adapters:
+
+| Environment | Adapter | How it runs |
+|-------------|---------|-------------|
+| Development | `:async` | In-process threads inside the web server — no separate worker needed |
+| Production | `:solid_queue` | Database-backed queue with forked worker processes (`bin/jobs`) |
+
+This is a one-line config swap (`config.active_job.queue_adapter`). All job code (`FetchTitleJob`, etc.) is adapter-agnostic — Active Job's interface abstracts the backend. Switching between adapters requires zero code changes.
+
+**Why not Solid Queue in development?** Solid Queue's default fork mode crashes on macOS due to `fork()`-after-threads being unsafe on Darwin. The `:async` adapter avoids this while providing identical job execution semantics. Production runs on Linux (Docker/Render) where forking works correctly.
+
 ## Database Schema
 
 ```
