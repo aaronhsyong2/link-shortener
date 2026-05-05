@@ -60,7 +60,7 @@ RSpec.describe Url, type: :model do
     it "is decodable back to the id" do
       url = create(:url)
       decoded = Url::SQIDS.decode(url.slug)
-      expect(decoded).to eq([url.id])
+      expect(decoded).to eq([ url.id ])
     end
 
     it "produces different slugs for different ids" do
@@ -94,7 +94,7 @@ RSpec.describe Url, type: :model do
     end
 
     it "raises RecordNotFound for non-existent ids" do
-      slug = Url::SQIDS.encode([999999])
+      slug = Url::SQIDS.encode([ 999999 ])
       expect { Url.from_slug(slug) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end

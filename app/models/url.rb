@@ -10,7 +10,7 @@ class Url < ApplicationRecord
 
   def slug
     raise "Cannot generate slug for unsaved record" unless persisted?
-    SQIDS.encode([id])
+    SQIDS.encode([ id ])
   end
 
   def self.from_slug(slug)
