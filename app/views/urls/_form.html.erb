@@ -1,10 +1,10 @@
 <%= form_with(model: url) do |form| %>
   <% if url.errors.any? %>
-    <div class="rounded-lg bg-red-50 border border-red-200 p-4 mb-4">
-      <h3 class="text-sm font-medium text-red-800">
+    <div class="rounded-lg bg-red-50 border border-red-200 p-4 mb-4 dark:bg-red-900/20 dark:border-red-700">
+      <h3 class="text-sm font-medium text-red-800 dark:text-red-300">
         <%= pluralize(url.errors.count, "error") %> prevented this URL from being shortened:
       </h3>
-      <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside dark:text-red-400">
         <% url.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -13,12 +13,12 @@
   <% end %>
 
   <div class="space-y-4">
-    <%= form.label :target_url, "Enter your URL", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.label :target_url, "Enter your URL", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
     <%= form.url_field :target_url,
       placeholder: "https://example.com/very/long/url/that/needs/shortening",
       autofocus: true,
-      class: ["block w-full rounded-lg border px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition",
-        url.errors[:target_url].none? ? "border-gray-300" : "border-red-400 ring-red-200"] %>
+      class: ["block w-full rounded-lg border px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition dark:bg-gray-700 dark:text-white dark:placeholder-gray-400",
+        url.errors[:target_url].none? ? "border-gray-300 dark:border-gray-600" : "border-red-400 ring-red-200 dark:border-red-600"] %>
 
     <%= form.submit "Shorten URL", class: "w-full btn-primary py-3 cursor-pointer" %>
   </div>

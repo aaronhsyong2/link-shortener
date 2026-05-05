@@ -71,7 +71,8 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
-  gem "selenium-webdriver"
+  # Pinned: selenium-webdriver 4.41+ has syntax incompatible with Ruby 3.3.0
+  gem "selenium-webdriver", "~> 4.27.0"
 
   # Stub HTTP requests in tests [https://github.com/bblimke/webmock]
   gem "webmock"

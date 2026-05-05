@@ -9,6 +9,17 @@
 
     <%= yield :head %>
 
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem("theme");
+          if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -16,31 +27,58 @@
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <script>
+      document.addEventListener("turbo:before-cache", function() {
+        try {
+          var theme = localStorage.getItem("theme");
+          if (theme === "light") {
+            document.documentElement.classList.remove("dark");
+          } else if (theme === "dark") {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      });
+    </script>
   </head>
 
-  <body class="h-full bg-gray-50">
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+  <body class="h-full bg-gray-50 dark:bg-gray-900">
+    <nav class="bg-white shadow-sm border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
         <%= link_to root_path, class: "flex items-center space-x-2" do %>
-          <span class="text-xl font-bold text-blue-600">LinkShortener</span>
+          <span class="text-xl font-bold text-blue-600 dark:text-blue-400">LinkShortener</span>
         <% end %>
-        <div class="flex space-x-6">
-          <%= link_to "Shorten", root_path, class: "text-sm font-medium text-gray-600 hover:text-gray-900" %>
-          <%= link_to "All URLs", urls_path, class: "text-sm font-medium text-gray-600 hover:text-gray-900" %>
+        <div class="flex items-center space-x-6">
+          <%= link_to "Shorten", root_path, class: "text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" %>
+          <%= link_to "All URLs", urls_path, class: "text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" %>
+          <button
+            type="button"
+            data-controller="dark-mode"
+            data-action="click->dark-mode#toggle"
+            class="rounded-md p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 transition cursor-pointer"
+            aria-label="Toggle dark mode"
+            aria-pressed="false"
+          >
+            <svg aria-hidden="true" class="hidden dark:block w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+            </svg>
+            <svg aria-hidden="true" class="block dark:hidden w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+            </svg>
+          </button>
         </div>
       </div>
     </nav>
 
     <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
       <% if notice.present? %>
-        <div class="mb-6 rounded-lg bg-green-50 border border-green-200 p-4" id="notice">
-          <p class="text-sm font-medium text-green-800"><%= notice %></p>
+        <div class="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 dark:bg-green-900/20 dark:border-green-700" id="notice">
+          <p class="text-sm font-medium text-green-800 dark:text-green-300"><%= notice %></p>
         </div>
       <% end %>
 
       <% if alert.present? %>
-        <div class="mb-6 rounded-lg bg-red-50 border border-red-200 p-4" id="alert">
-          <p class="text-sm font-medium text-red-800"><%= alert %></p>
+        <div class="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 dark:bg-red-900/20 dark:border-red-700" id="alert">
+          <p class="text-sm font-medium text-red-800 dark:text-red-300"><%= alert %></p>
         </div>
       <% end %>
 

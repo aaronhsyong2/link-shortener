@@ -1,8 +1,8 @@
 <% content_for :title, "Report for #{@url.slug}" %>
 
 <div class="mb-6">
-  <h1 class="text-3xl font-bold text-gray-900">Usage Report</h1>
-  <p class="mt-1 text-sm text-gray-500">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Usage Report</h1>
+  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
     <%= link_to short_redirect_url(slug: @url.slug), short_redirect_url(slug: @url.slug),
       class: "font-mono link", target: "_blank", data: { turbo: false } %>
     &rarr;
@@ -14,34 +14,34 @@
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
   <div class="card p-5">
     <p class="label">Total Clicks</p>
-    <p class="mt-1 text-3xl font-bold text-gray-900"><%= @analytics.total_clicks %></p>
+    <p class="mt-1 text-3xl font-bold text-gray-900 dark:text-white"><%= @analytics.total_clicks %></p>
   </div>
   <div class="card p-5">
     <p class="label">Countries</p>
-    <p class="mt-1 text-3xl font-bold text-gray-900"><%= @analytics.visits_by_country.size %></p>
+    <p class="mt-1 text-3xl font-bold text-gray-900 dark:text-white"><%= @analytics.visits_by_country.size %></p>
   </div>
   <div class="card p-5">
     <p class="label">Title</p>
-    <p class="mt-1 text-sm font-medium text-gray-900 truncate"><%= @url.display_title %></p>
+    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100 truncate"><%= @url.display_title %></p>
   </div>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
   <div class="card overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-      <h2 class="text-sm font-semibold text-gray-900">Clicks by Country</h2>
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
+      <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Clicks by Country</h2>
     </div>
     <% if @analytics.visits_by_country.any? %>
-      <table class="min-w-full divide-y divide-gray-200">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead>
           <tr>
             <th class="th">Country</th>
             <th class="th text-right">Clicks</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
           <% @analytics.visits_by_country.each do |country, count| %>
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
               <td class="td"><%= country %></td>
               <td class="td text-right font-medium"><%= count %></td>
             </tr>
@@ -49,25 +49,25 @@
         </tbody>
       </table>
     <% else %>
-      <p class="px-6 py-8 text-sm text-gray-500 text-center">No visits yet.</p>
+      <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
     <% end %>
   </div>
 
   <div class="card overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-      <h2 class="text-sm font-semibold text-gray-900">Clicks by City</h2>
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
+      <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Clicks by City</h2>
     </div>
     <% if @analytics.visits_by_city.any? %>
-      <table class="min-w-full divide-y divide-gray-200">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead>
           <tr>
             <th class="th">City</th>
             <th class="th text-right">Clicks</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
           <% @analytics.visits_by_city.each do |city, count| %>
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
               <td class="td"><%= city %></td>
               <td class="td text-right font-medium"><%= count %></td>
             </tr>
@@ -75,17 +75,17 @@
         </tbody>
       </table>
     <% else %>
-      <p class="px-6 py-8 text-sm text-gray-500 text-center">No visits yet.</p>
+      <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
     <% end %>
   </div>
 </div>
 
 <div class="card overflow-hidden mb-8">
-  <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-    <h2 class="text-sm font-semibold text-gray-900">Recent Visits</h2>
+  <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
+    <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Recent Visits</h2>
   </div>
   <% if @analytics.recent_visits.any? %>
-    <table class="min-w-full divide-y divide-gray-200">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
       <thead>
         <tr>
           <th class="th">Timestamp</th>
@@ -93,20 +93,20 @@
           <th class="th">Location</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-gray-200">
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
         <% @analytics.recent_visits.each do |visit| %>
-          <tr class="hover:bg-gray-50">
-            <td class="td text-gray-600 font-mono">
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+            <td class="td text-gray-600 dark:text-gray-400 font-mono">
               <time datetime="<%= visit.iso_timestamp %>" data-controller="local-time"><%= visit.formatted_timestamp %></time>
             </td>
-            <td class="td text-gray-600 font-mono"><%= visit.masked_ip %></td>
+            <td class="td text-gray-600 dark:text-gray-400 font-mono"><%= visit.masked_ip %></td>
             <td class="td"><%= visit.display_location %></td>
           </tr>
         <% end %>
       </tbody>
     </table>
   <% else %>
-    <p class="px-6 py-8 text-sm text-gray-500 text-center">No visits yet.</p>
+    <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
   <% end %>
 </div>
 
