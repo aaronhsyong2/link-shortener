@@ -8,7 +8,9 @@ A URL shortening service built with Ruby on Rails. Shorten long URLs, track clic
 
 ## Features
 
-- Shorten any URL and get a short, shareable link (max 15 characters)
+- Shorten any URL and get a short, shareable link
+- Deterministic slug generation via [Sqids](https://sqids.org) — no collisions, no stored codes
+- Built-in profanity filtering (Sqids default blocklist)
 - Automatic page title extraction from target URLs
 - Click tracking with originating geolocation (country, city) and timestamps
 - Usage reports per short URL with click breakdowns
@@ -20,7 +22,8 @@ A URL shortening service built with Ruby on Rails. Shorten long URLs, track clic
 - **Backend:** Ruby 3.3.0, Rails 7.2.3
 - **Database:** PostgreSQL 16
 - **Frontend:** Tailwind CSS 4.2, Hotwire (Turbo + Stimulus)
-- **Testing:** RSpec, FactoryBot, WebMock, SimpleCov (89% coverage)
+- **Slug Generation:** [Sqids](https://sqids.org) (deterministic, ID-based encoding)
+- **Testing:** RSpec, FactoryBot, WebMock, SimpleCov (93% coverage)
 - **Security:** Rack::Attack (rate limiting), Brakeman (static analysis)
 - **Deployment:** Render (Docker)
 
@@ -65,7 +68,7 @@ Visit http://localhost:3000
 ## Running Tests
 
 ```bash
-bundle exec rspec                        # Run all specs (49 examples)
+bundle exec rspec                        # Run all specs (83 examples)
 bundle exec rspec spec/models/           # Run model specs only
 bundle exec rspec --format documentation # Verbose output
 ```
@@ -89,10 +92,10 @@ app/
 │   ├── redirects_controller.rb  # Short URL redirect + visit tracking
 │   └── reports_controller.rb    # Usage analytics dashboard
 ├── models/
-│   ├── url.rb                   # Validations, associations, immutable design
+│   ├── url.rb                   # Sqids slug encoding, validations, associations
 │   └── visit.rb                 # Click record with geolocation data
 ├── services/
-│   ├── url_shortener_service.rb # Base62 code generation with collision retry
+│   ├── url_shortener_service.rb # URL creation (single insert, no collision retry)
 │   ├── url_metadata_service.rb  # HTTP title extraction with redirect following
 │   └── geolocation_service.rb   # IP-to-location with private IP detection
 ├── views/
@@ -102,13 +105,37 @@ app/
     └── urls_helper.rb           # URL sanitization for XSS prevention
 ```
 
+## Short URL Strategy
+
+Slugs are generated deterministically from the database record ID using [Sqids](https://sqids.org):
+
+- `Url#slug` encodes the record's `id` → minimum 4 alphanumeric characters
+- `Url.from_slug(slug)` decodes the slug back to an ID and finds the record
+- No `short_code` column needed — slugs are computed at runtime
+- No collision retry — each ID maps to exactly one slug
+- Profanity filter is active via Sqids default blocklist
+
+**Security note:** Sqids provides obfuscation, not encryption. A determined attacker with knowledge of the alphabet could enumerate IDs. This is an accepted tradeoff for a demo project — all shortened URLs are considered public. For production use, a secret shuffled alphabet stored in Rails credentials would prevent casual enumeration.
+
+## Background Jobs
+
+Asynchronous work (e.g. page title fetching) is handled by Active Job with environment-specific adapters:
+
+| Environment | Adapter | How it runs |
+|-------------|---------|-------------|
+| Development | `:async` | In-process threads inside the web server — no separate worker needed |
+| Production | `:solid_queue` | Database-backed queue with forked worker processes (`bin/jobs`) |
+
+This is a one-line config swap (`config.active_job.queue_adapter`). All job code (`FetchTitleJob`, etc.) is adapter-agnostic — Active Job's interface abstracts the backend. Switching between adapters requires zero code changes.
+
+**Why not Solid Queue in development?** Solid Queue's default fork mode crashes on macOS due to `fork()`-after-threads being unsafe on Darwin. The `:async` adapter avoids this while providing identical job execution semantics. Production runs on Linux (Docker/Render) where forking works correctly.
+
 ## Database Schema
 
 ```
 urls
 ├── id              (bigint, PK)
 ├── target_url      (string, NOT NULL)
-├── short_code      (string, NOT NULL, max 15 chars, UNIQUE INDEX)
 ├── title           (string, nullable)
 ├── clicks_count    (integer, NOT NULL, default 0)
 ├── created_at      (timestamp)

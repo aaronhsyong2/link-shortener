@@ -5,7 +5,7 @@ class UrlDecorator < SimpleDelegator
   end
 
   def short_url(context)
-    context.short_redirect_url(short_code: short_code)
+    context.short_redirect_url(slug: slug)
   end
 
   def formatted_created_at

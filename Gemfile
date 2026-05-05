@@ -25,6 +25,9 @@ gem "rack-attack"
 # Pagination [https://github.com/kaminari/kaminari]
 gem "kaminari"
 
+# Short ID generation from integers [https://sqids.org]
+gem "sqids"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 

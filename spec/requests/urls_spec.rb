@@ -8,8 +8,8 @@ RSpec.describe "Urls", type: :request do
     end
 
     it "displays all urls" do
-      create(:url, short_code: "aaa111", title: "First")
-      create(:url, short_code: "bbb222", title: "Second")
+      create(:url, title: "First")
+      create(:url, title: "Second")
       get urls_path
       expect(response.body).to include("First")
       expect(response.body).to include("Second")

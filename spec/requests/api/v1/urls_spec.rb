@@ -9,10 +9,10 @@ RSpec.describe "Api::V1::Urls", type: :request do
 
       expect(response).to have_http_status(:created)
       json = JSON.parse(response.body)
-      expect(json["short_code"]).to be_present
+      expect(json["slug"]).to be_present
       expect(json["target_url"]).to eq("https://example.com")
       expect(json["title"]).to be_nil
-      expect(json["short_url"]).to include(json["short_code"])
+      expect(json["short_url"]).to include(json["slug"])
       expect(json["clicks_count"]).to eq(0)
       expect(json["created_at"]).to be_present
     end
@@ -44,20 +44,20 @@ RSpec.describe "Api::V1::Urls", type: :request do
     end
   end
 
-  describe "GET /api/v1/urls/:short_code" do
+  describe "GET /api/v1/urls/:slug" do
     it "returns URL details" do
-      url = create(:url, short_code: "api123", title: "Test")
+      url = create(:url, title: "Test")
 
-      get "/api/v1/urls/api123", as: :json
+      get "/api/v1/urls/#{url.slug}", as: :json
 
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
-      expect(json["short_code"]).to eq("api123")
+      expect(json["slug"]).to eq(url.slug)
       expect(json["target_url"]).to eq(url.target_url)
       expect(json["title"]).to eq("Test")
     end
 
-    it "returns 404 for unknown short codes" do
+    it "returns 404 for unknown slugs" do
       get "/api/v1/urls/nonexistent", as: :json
 
       expect(response).to have_http_status(:not_found)

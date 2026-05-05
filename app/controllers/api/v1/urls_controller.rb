@@ -9,7 +9,7 @@ module Api
       end
 
       def show
-        url = Url.find_by!(short_code: params[:short_code])
+        url = Url.from_slug(params[:slug])
         render json: url_response(url)
       end
 
@@ -21,8 +21,8 @@ module Api
 
       def url_response(url)
         {
-          short_code: url.short_code,
-          short_url: short_redirect_url(short_code: url.short_code),
+          slug: url.slug,
+          short_url: short_redirect_url(slug: url.slug),
           target_url: url.target_url,
           title: url.title,
           clicks_count: url.clicks_count,

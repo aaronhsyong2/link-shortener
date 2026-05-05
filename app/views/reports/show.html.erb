@@ -1,9 +1,9 @@
-<% content_for :title, "Report for #{@url.short_code}" %>
+<% content_for :title, "Report for #{@url.slug}" %>
 
 <div class="mb-6">
   <h1 class="text-3xl font-bold text-gray-900">Usage Report</h1>
   <p class="mt-1 text-sm text-gray-500">
-    <%= link_to short_redirect_url(short_code: @url.short_code), short_redirect_url(short_code: @url.short_code),
+    <%= link_to short_redirect_url(slug: @url.slug), short_redirect_url(slug: @url.slug),
       class: "font-mono link", target: "_blank", data: { turbo: false } %>
     &rarr;
     <%= link_to truncate(@url.target_url, length: 60), safe_url(@url.target_url),

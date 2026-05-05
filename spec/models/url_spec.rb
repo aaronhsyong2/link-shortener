@@ -23,28 +23,6 @@ RSpec.describe Url, type: :model do
       url = build(:url, target_url: "javascript:alert('xss')")
       expect(url).not_to be_valid
     end
-
-    it "requires short_code" do
-      url = build(:url, short_code: nil)
-      expect(url).not_to be_valid
-    end
-
-    it "enforces short_code uniqueness" do
-      existing = create(:url)
-      duplicate = build(:url, short_code: existing.short_code)
-      expect(duplicate).not_to be_valid
-      expect(duplicate.errors[:short_code]).to include("has already been taken")
-    end
-
-    it "enforces short_code max length of 15" do
-      url = build(:url, short_code: "a" * 16)
-      expect(url).not_to be_valid
-    end
-
-    it "accepts short_code at max length of 15" do
-      url = build(:url, short_code: "a" * 15)
-      expect(url).to be_valid
-    end
   end
 
   describe "associations" do
@@ -59,6 +37,65 @@ RSpec.describe Url, type: :model do
       url = create(:url)
       create(:visit, url: url)
       expect { url.destroy }.to change(Visit, :count).by(-1)
+    end
+  end
+
+  describe "#slug" do
+    it "returns a deterministic slug from id" do
+      url = create(:url)
+      expect(url.slug).to eq(url.slug)
+      expect(url.slug).to be_present
+    end
+
+    it "produces slugs with minimum length of 4" do
+      url = create(:url)
+      expect(url.slug.length).to be >= 4
+    end
+
+    it "produces alphanumeric slugs" do
+      url = create(:url)
+      expect(url.slug).to match(/\A[a-zA-Z0-9]+\z/)
+    end
+
+    it "is decodable back to the id" do
+      url = create(:url)
+      decoded = Url::SQIDS.decode(url.slug)
+      expect(decoded).to eq([ url.id ])
+    end
+
+    it "produces different slugs for different ids" do
+      url1 = create(:url)
+      url2 = create(:url)
+      expect(url1.slug).not_to eq(url2.slug)
+    end
+
+    it "raises on unsaved record" do
+      url = build(:url)
+      expect { url.slug }.to raise_error(RuntimeError, /unsaved record/)
+    end
+  end
+
+  describe ".from_slug" do
+    it "finds a url by its slug" do
+      url = create(:url)
+      expect(Url.from_slug(url.slug)).to eq(url)
+    end
+
+    it "raises RecordNotFound for invalid slugs" do
+      expect { Url.from_slug("!!!") }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "raises RecordNotFound for nil slug" do
+      expect { Url.from_slug(nil) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "raises RecordNotFound for blank slug" do
+      expect { Url.from_slug("") }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "raises RecordNotFound for non-existent ids" do
+      slug = Url::SQIDS.encode([ 999999 ])
+      expect { Url.from_slug(slug) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

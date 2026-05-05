@@ -1,6 +1,6 @@
 class RedirectsController < ApplicationController
   def show
-    url = Url.find_by!(short_code: params[:short_code])
+    url = Url.from_slug(params[:slug])
 
     track_visit(url)
 

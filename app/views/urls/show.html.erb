@@ -9,11 +9,11 @@
         <label class="label">Short URL</label>
         <div class="flex items-center space-x-3">
           <code class="text-lg font-mono text-blue-600 break-all">
-            <%= short_redirect_url(short_code: @url.short_code) %>
+            <%= short_redirect_url(slug: @url.slug) %>
           </code>
           <button
             data-controller="clipboard"
-            data-clipboard-short-url-value="<%= short_redirect_url(short_code: @url.short_code) %>"
+            data-clipboard-short-url-value="<%= short_redirect_url(slug: @url.slug) %>"
             data-action="click->clipboard#copy"
             class="shrink-0 rounded-md bg-gray-100 hover:bg-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition cursor-pointer"
           >

@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :urls, only: :create
-      get "urls/:short_code", to: "urls#show"
+      get "urls/:slug", to: "urls#show"
     end
   end
 
@@ -16,6 +16,6 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
-  # Short URL redirect — must be last (catches /:short_code)
-  get ":short_code" => "redirects#show", as: :short_redirect
+  # Short URL redirect — must be last (catches /:slug)
+  get ":slug" => "redirects#show", as: :short_redirect
 end
