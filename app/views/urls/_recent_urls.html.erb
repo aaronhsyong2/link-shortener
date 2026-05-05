@@ -1,0 +1,47 @@
+<div class="mt-8 max-w-xl mx-auto">
+  <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Recent URLs</h2>
+
+  <% if recent_urls.any? %>
+    <% recent_urls.each do |url| %>
+      <%= turbo_stream_from url %>
+    <% end %>
+    <div class="card overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="th">Short URL</th>
+            <th class="th">Target</th>
+            <th class="th">Title</th>
+            <th class="th text-right">Clicks</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          <% recent_urls.each do |url| %>
+            <tr>
+              <td class="td">
+                <%= link_to url.slug, short_redirect_url(slug: url.slug), target: "_blank", rel: "noopener noreferrer", class: "link font-mono text-sm" %>
+              </td>
+              <td class="td">
+                <span class="text-gray-600 dark:text-gray-400 truncate block max-w-48" title="<%= url.target_url %>">
+                  <%= truncate(url.target_url, length: 40) %>
+                </span>
+              </td>
+              <td class="td">
+                <span class="text-gray-700 dark:text-gray-300">
+                  <%= truncate(url.title || "Fetching...", length: 30) %>
+                </span>
+              </td>
+              <td class="td text-right font-medium">
+                <%= render "reports/clicks_count", url: url %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="card p-6 text-center text-gray-500 dark:text-gray-400">
+      No URLs shortened yet.
+    </div>
+  <% end %>
+</div>

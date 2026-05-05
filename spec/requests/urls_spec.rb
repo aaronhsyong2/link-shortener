@@ -21,6 +21,31 @@ RSpec.describe "Urls", type: :request do
       get new_url_path
       expect(response).to have_http_status(:success)
     end
+
+    it "shows empty state when no URLs in session" do
+      get new_url_path
+      expect(response.body).to include("No URLs shortened yet")
+    end
+
+    it "shows recent URLs from session" do
+      post urls_path, params: { url: { target_url: "https://example.com" } }
+      get new_url_path
+      expect(response.body).to include(Url.last.slug)
+    end
+
+    it "does not show URLs from other sessions" do
+      other_url = create(:url, title: "Other Person URL")
+      get new_url_path
+      expect(response.body).not_to include(other_url.slug)
+      expect(response.body).to include("No URLs shortened yet")
+    end
+
+    it "handles deleted URLs gracefully" do
+      post urls_path, params: { url: { target_url: "https://example.com" } }
+      Url.last.destroy
+      get new_url_path
+      expect(response.body).to include("No URLs shortened yet")
+    end
   end
 
   describe "POST /urls" do
@@ -51,6 +76,12 @@ RSpec.describe "Urls", type: :request do
     it "rejects blank URLs" do
       post urls_path, params: { url: { target_url: "" } }
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it "stores URL ID in session and shows on homepage" do
+      post urls_path, params: { url: { target_url: "https://example.com" } }
+      get new_url_path
+      expect(response.body).to include(Url.last.slug)
     end
   end
 
