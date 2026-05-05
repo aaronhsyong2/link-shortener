@@ -23,6 +23,79 @@ RSpec.describe Url, type: :model do
       url = build(:url, target_url: "javascript:alert('xss')")
       expect(url).not_to be_valid
     end
+
+    describe "embedded credentials" do
+      it "rejects URLs with user:pass" do
+        url = build(:url, target_url: "http://user:pass@example.com/path")
+        expect(url).not_to be_valid
+        expect(url.errors[:target_url]).to include("must not contain embedded credentials")
+      end
+
+      it "allows URLs without credentials" do
+        url = build(:url, target_url: "https://example.com/path")
+        expect(url).to be_valid
+      end
+    end
+
+    describe "private IP rejection" do
+      %w[
+        http://127.0.0.1/admin
+        http://10.0.0.1/internal
+        http://172.16.0.1/secret
+        http://192.168.1.1/router
+        http://[::1]/ipv6
+      ].each do |private_url|
+        it "rejects #{private_url}" do
+          url = build(:url, target_url: private_url)
+          expect(url).not_to be_valid
+          expect(url.errors[:target_url]).to include("must not point to a private or localhost address")
+        end
+      end
+
+      it "allows public IPs" do
+        url = build(:url, target_url: "http://8.8.8.8/dns")
+        expect(url).to be_valid
+      end
+
+      it "allows domain names (no DNS resolution)" do
+        url = build(:url, target_url: "https://example.com")
+        expect(url).to be_valid
+      end
+    end
+
+    describe "self-referential rejection" do
+      before do
+        allow(ENV).to receive(:fetch).and_call_original
+        allow(ENV).to receive(:fetch).with("SHORTENER_HOSTS", "").and_return("short.ly,localhost")
+      end
+
+      it "rejects URLs pointing to shortener host" do
+        url = build(:url, target_url: "http://short.ly/abc")
+        expect(url).not_to be_valid
+        expect(url.errors[:target_url]).to include("must not point back to this shortener")
+      end
+
+      it "rejects case-insensitively" do
+        url = build(:url, target_url: "http://SHORT.LY/abc")
+        expect(url).not_to be_valid
+      end
+
+      it "handles comma-separated hosts" do
+        url = build(:url, target_url: "http://localhost/abc")
+        expect(url).not_to be_valid
+      end
+
+      it "allows non-shortener hosts" do
+        url = build(:url, target_url: "https://example.com")
+        expect(url).to be_valid
+      end
+
+      it "skips check when SHORTENER_HOSTS is empty" do
+        allow(ENV).to receive(:fetch).with("SHORTENER_HOSTS", "").and_return("")
+        url = build(:url, target_url: "http://short.ly/abc")
+        expect(url).to be_valid
+      end
+    end
   end
 
   describe "associations" do
