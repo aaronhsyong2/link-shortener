@@ -1,6 +1,9 @@
 require "rails_helper"
 
 RSpec.describe FetchTitleJob, type: :job do
+  include ActiveJob::TestHelper
+  include ActionCable::TestHelper
+
   describe "#perform" do
     it "fetches and updates the title" do
       url = create(:url, title: nil)
@@ -25,12 +28,37 @@ RSpec.describe FetchTitleJob, type: :job do
       expect { described_class.new.perform(999999) }.not_to raise_error
     end
 
-    it "does not update if fetch returns nil" do
+    it "sets title_fetched_at even when fetch returns nil" do
       url = create(:url, title: nil)
       stub_request(:get, url.target_url).to_timeout
 
       described_class.new.perform(url.id)
-      expect(url.reload.title).to be_nil
+      url.reload
+      expect(url.title).to be_nil
+      expect(url.title_fetched_at).to be_present
+    end
+
+    it "marks title_fetched_at even when service raises" do
+      url = create(:url, title: nil)
+      allow(UrlMetadataService).to receive(:call).and_raise(StandardError, "connection reset")
+
+      expect { described_class.new.perform(url.id) }.not_to raise_error
+      expect(url.reload.title_fetched_at).to be_present
+      expect(url.title).to be_nil
+    end
+
+    it "broadcasts title update via Turbo Stream" do
+      url = create(:url, title: nil)
+      stub_request(:get, url.target_url)
+        .to_return(
+          status: 200,
+          body: "<html><head><title>Broadcast Title</title></head></html>",
+          headers: { "Content-Type" => "text/html" }
+        )
+
+      assert_broadcasts("url_titles", 1) do
+        described_class.new.perform(url.id)
+      end
     end
   end
 end

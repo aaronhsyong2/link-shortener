@@ -1,10 +1,14 @@
 class Url < ApplicationRecord
+  include Turbo::Broadcastable
+
   SQIDS = Sqids.new(
     min_length: 4,
     alphabet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
   )
 
   has_many :visits, dependent: :destroy
+
+  after_update_commit :broadcast_title, if: -> { saved_change_to_title? && title.present? }
 
   validates :target_url, presence: true, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: "must be a valid HTTP or HTTPS URL" }
   validate :reject_embedded_credentials
@@ -24,6 +28,15 @@ class Url < ApplicationRecord
   end
 
   private
+
+  def broadcast_title
+    broadcast_replace_to(
+      "url_titles",
+      target: "url_#{id}_title",
+      partial: "urls/title",
+      locals: { url: self }
+    )
+  end
 
   def reject_embedded_credentials
     return if target_url.blank?

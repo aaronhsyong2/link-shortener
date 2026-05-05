@@ -1,7 +1,7 @@
 class UrlDecorator < SimpleDelegator
   def display_title
-    return "Fetching title..." if title.nil? && created_at > 1.minute.ago
-    title.presence || "No title available"
+    return title if title.present?
+    title_fetched_at? ? "No title available" : "Fetching title..."
   end
 
   def short_url(context)

@@ -7,6 +7,9 @@ class FetchTitleJob < ApplicationJob
     return if url.title.present?
 
     title = UrlMetadataService.call(url.target_url)
-    url.update!(title: title) if title.present?
+    url.update!(title: title.presence, title_fetched_at: Time.current)
+  rescue StandardError => e
+    url&.update_column(:title_fetched_at, Time.current)
+    Rails.logger.warn("FetchTitleJob failed for url_id=#{url_id}: #{e.message}")
   end
 end

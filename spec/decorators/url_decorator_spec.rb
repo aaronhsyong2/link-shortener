@@ -9,13 +9,18 @@ RSpec.describe UrlDecorator do
       expect(decorated.display_title).to eq("Example")
     end
 
-    it "returns fallback when title is nil" do
-      url.update_column(:title, nil)
+    it "returns 'Fetching title...' when title is nil and job not yet completed" do
+      url.update_columns(title: nil, title_fetched_at: nil)
+      expect(decorated.display_title).to eq("Fetching title...")
+    end
+
+    it "returns 'No title available' when title is nil and job completed" do
+      url.update_columns(title: nil, title_fetched_at: Time.current)
       expect(decorated.display_title).to eq("No title available")
     end
 
-    it "returns fallback when title is blank" do
-      url.update_column(:title, "")
+    it "returns 'No title available' when title is blank and job completed" do
+      url.update_columns(title: "", title_fetched_at: Time.current)
       expect(decorated.display_title).to eq("No title available")
     end
   end

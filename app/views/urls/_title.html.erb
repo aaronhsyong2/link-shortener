@@ -1,0 +1,3 @@
+<span id="url_<%= url.id %>_title" class="text-gray-600 dark:text-gray-400">
+  <%= truncate(url.title.presence || (url.title_fetched_at? ? "No title available" : "Fetching title..."), length: 30) %>
+</span>
