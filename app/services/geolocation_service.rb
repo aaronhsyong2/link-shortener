@@ -17,7 +17,9 @@ class GeolocationService
   def call(ip_address)
     return default_result if private_ip?(ip_address)
 
-    fetch_geolocation(ip_address)
+    Rails.cache.fetch(subnet_cache_key(ip_address), expires_in: 1.day) do
+      fetch_geolocation(ip_address)
+    end
   rescue SocketError, Errno::ECONNREFUSED, Net::OpenTimeout, Net::ReadTimeout, JSON::ParserError
     default_result
   end
@@ -41,6 +43,10 @@ class GeolocationService
       country: data["country"] || "Unknown",
       city: data["city"] || "Unknown"
     }
+  end
+
+  def subnet_cache_key(ip_address)
+    "geo:#{ip_address.gsub(/\.\d+$/, '.0')}"
   end
 
   def private_ip?(ip_address)
