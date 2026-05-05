@@ -12,13 +12,12 @@ class RedirectsController < ApplicationController
   private
 
   def track_visit(url)
-    geo = GeolocationService.call(request.remote_ip)
     ua_data = parse_user_agent(request.user_agent)
 
-    url.visits.create!(
+    visit = url.visits.create!(
       ip_address: request.remote_ip,
-      country: geo[:country],
-      city: geo[:city],
+      country: nil,
+      city: nil,
       user_agent: request.user_agent.presence&.truncate(512, omission: ""),
       referer: request.referer.presence&.truncate(2048, omission: ""),
       referer_domain: extract_referer_domain(request.referer),
@@ -29,7 +28,7 @@ class RedirectsController < ApplicationController
       visited_at: Time.current
     )
 
-    url.increment!(:clicks_count)
+    ResolveGeoJob.perform_later(visit.id)
   end
 
   def parse_user_agent(ua_string)

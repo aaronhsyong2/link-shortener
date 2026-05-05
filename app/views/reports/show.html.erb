@@ -1,4 +1,5 @@
 <% content_for :title, "Report for #{@url.slug}" %>
+<%= turbo_stream_from @url %>
 
 <div class="mb-6">
   <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Usage Report</h1>
@@ -14,7 +15,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
   <div class="card p-5">
     <p class="label">Total Clicks</p>
-    <p class="mt-1 text-3xl font-bold text-gray-900 dark:text-white"><%= @analytics.total_clicks %></p>
+    <p class="mt-1 text-3xl font-bold text-gray-900 dark:text-white"><%= render "reports/clicks_count", url: @url %></p>
   </div>
   <div class="card p-5">
     <p class="label">Countries</p>
@@ -84,30 +85,18 @@
   <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
     <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Recent Visits</h2>
   </div>
-  <% if @analytics.recent_visits.any? %>
-    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-      <thead>
-        <tr>
-          <th class="th">Timestamp</th>
-          <th class="th">IP Address</th>
-          <th class="th">Location</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-        <% @analytics.recent_visits.each do |visit| %>
-          <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-            <td class="td text-gray-600 dark:text-gray-400 font-mono">
-              <time datetime="<%= visit.iso_timestamp %>" data-controller="local-time"><%= visit.formatted_timestamp %></time>
-            </td>
-            <td class="td text-gray-600 dark:text-gray-400 font-mono"><%= visit.masked_ip %></td>
-            <td class="td"><%= visit.display_location %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% else %>
-    <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
-  <% end %>
+  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+    <thead>
+      <tr>
+        <th class="th">Timestamp</th>
+        <th class="th">IP Address</th>
+        <th class="th">Location</th>
+      </tr>
+    </thead>
+    <tbody id="visits" class="divide-y divide-gray-200 dark:divide-gray-700">
+      <%= render partial: "reports/visit_row", collection: @analytics.recent_visits, as: :visit %>
+    </tbody>
+  </table>
 </div>
 
 <div class="flex space-x-3">

@@ -14,6 +14,7 @@ class VisitDecorator < SimpleDelegator
   end
 
   def display_location
+    return "Resolving..." if country.nil?
     [ city, country ].reject { |v| v == "Unknown" }.join(", ").presence || "Unknown"
   end
 

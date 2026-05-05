@@ -42,6 +42,11 @@ RSpec.describe VisitDecorator do
       visit.update_column(:country, "Unknown")
       expect(decorated.display_location).to eq("Unknown")
     end
+
+    it "returns Resolving... when country is nil" do
+      visit.update_column(:country, nil)
+      expect(decorated.display_location).to eq("Resolving...")
+    end
   end
 
   describe "#display_browser" do

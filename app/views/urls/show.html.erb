@@ -1,5 +1,6 @@
 <% content_for :title, @url.title || "URL Details" %>
 <%= turbo_stream_from "url_titles" %>
+<%= turbo_stream_from @url %>
 
 <div class="max-w-2xl mx-auto">
   <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">URL Details</h1>
@@ -39,7 +40,7 @@
         </div>
         <div>
           <label class="label">Clicks</label>
-          <p class="text-sm text-gray-900 dark:text-gray-100"><%= @url.clicks_count %></p>
+          <p class="text-sm text-gray-900 dark:text-gray-100"><%= render "reports/clicks_count", url: @url %></p>
         </div>
       </div>
     </div>

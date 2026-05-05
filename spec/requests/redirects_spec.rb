@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe "Redirects", type: :request do
   describe "GET /:slug" do
     it "redirects to the target URL" do
-      stub_request(:get, "https://ipinfo.io/127.0.0.1/json").to_timeout
       url = create(:url, target_url: "https://example.com")
 
       get "/#{url.slug}"
@@ -11,14 +10,28 @@ RSpec.describe "Redirects", type: :request do
     end
 
     it "tracks a visit" do
-      stub_request(:get, "https://ipinfo.io/127.0.0.1/json").to_timeout
       url = create(:url)
 
       expect { get "/#{url.slug}" }.to change(Visit, :count).by(1)
     end
 
-    it "increments clicks_count" do
-      stub_request(:get, "https://ipinfo.io/127.0.0.1/json").to_timeout
+    it "creates visit with nil geo (resolved async)" do
+      url = create(:url)
+
+      get "/#{url.slug}"
+
+      visit = Visit.last
+      expect(visit.country).to be_nil
+      expect(visit.city).to be_nil
+    end
+
+    it "enqueues ResolveGeoJob" do
+      url = create(:url)
+
+      expect { get "/#{url.slug}" }.to have_enqueued_job(ResolveGeoJob)
+    end
+
+    it "increments clicks_count via counter_cache" do
       url = create(:url)
 
       get "/#{url.slug}"
@@ -36,7 +49,6 @@ RSpec.describe "Redirects", type: :request do
     end
 
     it "populates enriched visit fields from request headers" do
-      stub_request(:get, "https://ipinfo.io/127.0.0.1/json").to_timeout
       url = create(:url)
 
       get "/#{url.slug}", headers: {
@@ -56,7 +68,6 @@ RSpec.describe "Redirects", type: :request do
     end
 
     it "handles missing referer gracefully" do
-      stub_request(:get, "https://ipinfo.io/127.0.0.1/json").to_timeout
       url = create(:url)
 
       get "/#{url.slug}"

@@ -1,0 +1,8 @@
+<% visit = VisitDecorator.new(visit) unless visit.is_a?(VisitDecorator) %>
+<tr id="visit_<%= visit.id %>" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+  <td class="td text-gray-600 dark:text-gray-400 font-mono">
+    <time datetime="<%= visit.iso_timestamp %>" data-controller="local-time"><%= visit.formatted_timestamp %></time>
+  </td>
+  <td class="td text-gray-600 dark:text-gray-400 font-mono"><%= visit.masked_ip %></td>
+  <td class="td"><%= visit.display_location %></td>
+</tr>
