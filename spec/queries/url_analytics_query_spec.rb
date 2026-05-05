@@ -56,13 +56,13 @@ RSpec.describe UrlAnalyticsQuery do
 
   describe "#daily_series" do
     it "returns [date, count] pairs for last 30 days by default" do
-      create(:visit, url: url, visited_at: Time.current.noon)
-      create(:visit, url: url, visited_at: Time.current.noon)
-      create(:visit, url: url, visited_at: 3.days.ago.noon)
+      create(:visit, url: url, visited_at: Time.current.middle_of_day)
+      create(:visit, url: url, visited_at: Time.current.middle_of_day + 2.hours)
+      create(:visit, url: url, visited_at: 3.days.ago.middle_of_day)
 
       result = query.daily_series
       expect(result.length).to eq(30)
-      expect(result.last).to eq([ Date.today, 2 ])
+      expect(result.last).to eq([ Date.current, 2 ])
       expect(result.find { |d, _| d == 3.days.ago.to_date }).to eq([ 3.days.ago.to_date, 1 ])
     end
 
@@ -77,16 +77,16 @@ RSpec.describe UrlAnalyticsQuery do
     end
 
     it "excludes bot visits by default" do
-      create(:visit, url: url, visited_at: Time.current.noon, is_bot: true)
-      create(:visit, url: url, visited_at: Time.current.noon, is_bot: false)
+      create(:visit, url: url, visited_at: Time.current.middle_of_day, is_bot: true)
+      create(:visit, url: url, visited_at: Time.current.middle_of_day, is_bot: false)
 
       result = query.daily_series(days: 1)
       expect(result.last.last).to eq(1)
     end
 
     it "includes bot visits when requested" do
-      create(:visit, url: url, visited_at: Time.current.noon, is_bot: true)
-      create(:visit, url: url, visited_at: Time.current.noon, is_bot: false)
+      create(:visit, url: url, visited_at: Time.current.middle_of_day, is_bot: true)
+      create(:visit, url: url, visited_at: Time.current.middle_of_day, is_bot: false)
 
       result = query.daily_series(days: 1, include_bots: true)
       expect(result.last.last).to eq(2)

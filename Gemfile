@@ -25,6 +25,9 @@ gem "rack-attack"
 # Pagination [https://github.com/kaminari/kaminari]
 gem "kaminari"
 
+# Charts [https://github.com/ankane/chartkick]
+gem "chartkick"
+
 # Short ID generation from integers [https://sqids.org]
 gem "sqids"
 

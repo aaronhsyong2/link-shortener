@@ -1,0 +1,79 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="card overflow-hidden md:col-span-2">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Referer Domains</h3>
+    </div>
+    <% if @analytics.visits_by_referer_domain.any? %>
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead>
+          <tr>
+            <th class="th">Domain</th>
+            <th class="th text-right">Clicks</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          <% @analytics.visits_by_referer_domain.each do |domain, count| %>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+              <td class="td"><%= domain.presence || "Direct" %></td>
+              <td class="td text-right font-medium"><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
+    <% end %>
+  </div>
+
+  <div class="card overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Countries</h3>
+    </div>
+    <% if @analytics.visits_by_country.any? %>
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead>
+          <tr>
+            <th class="th">Country</th>
+            <th class="th text-right">Clicks</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          <% @analytics.visits_by_country.each do |country, count| %>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+              <td class="td"><%= country %></td>
+              <td class="td text-right font-medium"><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
+    <% end %>
+  </div>
+
+  <div class="card overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Cities</h3>
+    </div>
+    <% if @analytics.visits_by_city.any? %>
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead>
+          <tr>
+            <th class="th">City</th>
+            <th class="th text-right">Clicks</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          <% @analytics.visits_by_city.each do |city, count| %>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+              <td class="td"><%= city %></td>
+              <td class="td text-right font-medium"><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
+    <% end %>
+  </div>
+</div>

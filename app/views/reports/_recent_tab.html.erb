@@ -1,0 +1,26 @@
+<div class="card overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <thead>
+        <tr>
+          <th class="th">Timestamp</th>
+          <th class="th">IP</th>
+          <th class="th">Location</th>
+          <th class="th">Browser</th>
+          <th class="th">Device</th>
+          <th class="th">Referer</th>
+          <th class="th">Bot</th>
+        </tr>
+      </thead>
+      <tbody id="visits" class="divide-y divide-gray-200 dark:divide-gray-700">
+        <%= render partial: "reports/visit_row", collection: @recent_visits, as: :visit %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<% if @recent_visits_page.total_pages > 1 %>
+  <div class="mt-4 flex justify-center">
+    <%= paginate @recent_visits_page %>
+  </div>
+<% end %>

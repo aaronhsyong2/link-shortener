@@ -12,7 +12,7 @@
   </p>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
   <div class="card p-5">
     <p class="label">Total Clicks</p>
     <p class="mt-1 text-3xl font-bold text-gray-900 dark:text-white"><%= render "reports/clicks_count", url: @url %></p>
@@ -22,81 +22,42 @@
     <p class="mt-1 text-3xl font-bold text-gray-900 dark:text-white"><%= @analytics.visits_by_country.size %></p>
   </div>
   <div class="card p-5">
-    <p class="label">Title</p>
-    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100 truncate"><%= @url.display_title %></p>
+    <p class="label">First Click</p>
+    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100"><%= @analytics.first_click&.strftime("%b %d, %Y") || "—" %></p>
+  </div>
+  <div class="card p-5">
+    <p class="label">Last Click</p>
+    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100"><%= @analytics.last_click&.strftime("%b %d, %Y") || "—" %></p>
   </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-  <div class="card overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
-      <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Clicks by Country</h2>
-    </div>
-    <% if @analytics.visits_by_country.any? %>
-      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-        <thead>
-          <tr>
-            <th class="th">Country</th>
-            <th class="th text-right">Clicks</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-          <% @analytics.visits_by_country.each do |country, count| %>
-            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-              <td class="td"><%= country %></td>
-              <td class="td text-right font-medium"><%= count %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
-    <% end %>
+<div data-controller="tabs" class="mb-8">
+  <nav class="flex overflow-x-auto space-x-6 border-b border-gray-200 dark:border-gray-700 mb-6 -mx-1 px-1">
+    <a href="#overview" data-tabs-target="tab" data-tab="overview" data-action="click->tabs#switch"
+       class="pb-3 text-sm tab-active">Overview</a>
+    <a href="#devices" data-tabs-target="tab" data-tab="devices" data-action="click->tabs#switch"
+       class="pb-3 text-sm tab-inactive">Devices</a>
+    <a href="#traffic" data-tabs-target="tab" data-tab="traffic" data-action="click->tabs#switch"
+       class="pb-3 text-sm tab-inactive">Traffic Sources</a>
+    <a href="#recent" data-tabs-target="tab" data-tab="recent" data-action="click->tabs#switch"
+       class="pb-3 text-sm tab-inactive">Recent</a>
+  </nav>
+
+  <div data-tabs-target="panel" data-tab="overview">
+    <%= render "reports/overview_tab" %>
   </div>
 
-  <div class="card overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
-      <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Clicks by City</h2>
-    </div>
-    <% if @analytics.visits_by_city.any? %>
-      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-        <thead>
-          <tr>
-            <th class="th">City</th>
-            <th class="th text-right">Clicks</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-          <% @analytics.visits_by_city.each do |city, count| %>
-            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-              <td class="td"><%= city %></td>
-              <td class="td text-right font-medium"><%= count %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400 text-center">No visits yet.</p>
-    <% end %>
+  <div data-tabs-target="panel" data-tab="devices" hidden>
+    <%= render "reports/devices_tab" %>
   </div>
-</div>
 
-<div class="card overflow-hidden mb-8">
-  <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
-    <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Recent Visits</h2>
+  <div data-tabs-target="panel" data-tab="traffic" hidden>
+    <%= render "reports/traffic_tab" %>
   </div>
-  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-    <thead>
-      <tr>
-        <th class="th">Timestamp</th>
-        <th class="th">IP Address</th>
-        <th class="th">Location</th>
-      </tr>
-    </thead>
-    <tbody id="visits" class="divide-y divide-gray-200 dark:divide-gray-700">
-      <%= render partial: "reports/visit_row", collection: @analytics.recent_visits, as: :visit %>
-    </tbody>
-  </table>
+
+  <div data-tabs-target="panel" data-tab="recent" hidden>
+    <%= render "reports/recent_tab" %>
+  </div>
 </div>
 
 <div class="flex space-x-3">

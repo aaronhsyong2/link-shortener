@@ -22,13 +22,14 @@ class UrlAnalyticsQuery
   end
 
   def daily_series(days: 30, include_bots: false)
-    start_date = (days - 1).days.ago.to_date
+    today = Date.current
+    start_date = today - (days - 1)
     visits = filtered_visits(include_bots)
       .where(visited_at: start_date.beginning_of_day..)
       .group("DATE(visited_at)")
       .count
 
-    (start_date..Date.today).map { |date| [ date, visits[date] || 0 ] }
+    (start_date..today).map { |date| [ date, visits[date] || 0 ] }
   end
 
   def hourly_distribution(include_bots: false)

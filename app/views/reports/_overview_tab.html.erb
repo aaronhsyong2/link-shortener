@@ -1,0 +1,12 @@
+<div class="space-y-6">
+  <div class="card p-6">
+    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Clicks (Last 30 Days)</h3>
+    <%= line_chart @analytics.daily_series, height: "300px", colors: ["#2563eb"],
+      library: chart_library_options, empty: "No click data yet" %>
+  </div>
+  <div class="card p-6">
+    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Hourly Distribution</h3>
+    <%= bar_chart @analytics.hourly_distribution, height: "250px", colors: ["#3b82f6"],
+      library: chart_library_options, empty: "No click data yet" %>
+  </div>
+</div>
