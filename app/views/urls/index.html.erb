@@ -21,7 +21,7 @@
         <% @urls.each do |url| %>
           <tr class="hover:bg-gray-50">
             <td class="td">
-              <%= link_to url.short_code, short_redirect_url(short_code: url.short_code),
+              <%= link_to url.slug, short_redirect_url(slug: url.slug),
                 class: "font-mono link", target: "_blank", data: { turbo: false } %>
             </td>
             <td class="td max-w-xs truncate text-gray-600">

@@ -28,7 +28,7 @@ RSpec.describe UrlDecorator do
 
   it "delegates model methods transparently" do
     expect(decorated.target_url).to eq(url.target_url)
-    expect(decorated.short_code).to eq(url.short_code)
+    expect(decorated.slug).to eq(url.slug)
     expect(decorated.clicks_count).to eq(url.clicks_count)
   end
 end
