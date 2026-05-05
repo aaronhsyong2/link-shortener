@@ -16,4 +16,24 @@ class VisitDecorator < SimpleDelegator
   def display_location
     [ city, country ].reject { |v| v == "Unknown" }.join(", ").presence || "Unknown"
   end
+
+  def display_browser
+    browser.presence || "Unknown"
+  end
+
+  def display_os
+    os.presence || "Unknown"
+  end
+
+  def display_device_type
+    device_type&.capitalize || "Unknown"
+  end
+
+  def masked_referer
+    referer_domain.presence || "Direct"
+  end
+
+  def bot_indicator
+    is_bot ? "Bot" : "Human"
+  end
 end

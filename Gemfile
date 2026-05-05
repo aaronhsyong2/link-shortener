@@ -28,6 +28,9 @@ gem "kaminari"
 # Short ID generation from integers [https://sqids.org]
 gem "sqids"
 
+# User-agent parsing and device detection [https://github.com/fnando/browser]
+gem "browser", "~> 6.0"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 

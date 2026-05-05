@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_05_090343) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_05_113237) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -151,6 +151,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_05_090343) do
     t.datetime "visited_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "user_agent", limit: 512
+    t.string "referer", limit: 2048
+    t.string "referer_domain", limit: 256
+    t.string "browser", limit: 128
+    t.string "os", limit: 128
+    t.string "device_type", limit: 32
+    t.boolean "is_bot", default: false
+    t.index ["browser"], name: "index_visits_on_browser"
+    t.index ["device_type"], name: "index_visits_on_device_type"
+    t.index ["is_bot"], name: "index_visits_on_is_bot"
+    t.index ["os"], name: "index_visits_on_os"
+    t.index ["referer_domain"], name: "index_visits_on_referer_domain"
     t.index ["url_id"], name: "index_visits_on_url_id"
   end
 
