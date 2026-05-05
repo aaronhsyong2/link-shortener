@@ -35,5 +35,7 @@ module LinkShortener
     #
     config.time_zone = "UTC"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.exceptions_app = self.routes
   end
 end

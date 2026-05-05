@@ -6,7 +6,7 @@ class RedirectsController < ApplicationController
 
     redirect_to url.target_url, allow_other_host: true # brakeman:disable:Redirect -- intentional: URL shortener must redirect to user-provided URLs, validated as http/https in model
   rescue ActiveRecord::RecordNotFound
-    render file: Rails.root.join("public/404.html"), status: :not_found, layout: false
+    render "errors/not_found", status: :not_found
   end
 
   private

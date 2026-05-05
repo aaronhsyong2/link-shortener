@@ -16,6 +16,9 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  # Error pages
+  match "/404", to: "errors#not_found", via: :all
+
   # Short URL redirect — must be last (catches /:slug)
   get ":slug" => "redirects#show", as: :short_redirect
 end
