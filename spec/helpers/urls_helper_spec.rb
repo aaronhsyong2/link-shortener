@@ -21,5 +21,13 @@ RSpec.describe UrlsHelper, type: :helper do
     it "returns # for invalid URLs" do
       expect(helper.safe_url("not a url at all")).to eq("#")
     end
+
+    it "returns # for ftp: URLs" do
+      expect(helper.safe_url("ftp://files.example.com/doc.pdf")).to eq("#")
+    end
+
+    it "returns # for empty string" do
+      expect(helper.safe_url("")).to eq("#")
+    end
   end
 end

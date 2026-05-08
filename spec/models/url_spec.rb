@@ -24,6 +24,44 @@ RSpec.describe Url, type: :model do
       expect(url).not_to be_valid
     end
 
+    it "rejects data: URIs" do
+      url = build(:url, target_url: "data:text/html,<script>alert('xss')</script>")
+      expect(url).not_to be_valid
+    end
+
+    it "rejects ftp: URLs" do
+      url = build(:url, target_url: "ftp://files.example.com/doc.pdf")
+      expect(url).not_to be_valid
+    end
+
+    it "rejects URLs exceeding 2048 characters" do
+      long_url = "https://example.com/" + "a" * 2040
+      url = build(:url, target_url: long_url)
+      expect(url).not_to be_valid
+      expect(url.errors[:target_url]).to include("is too long (maximum is 2048 characters)")
+    end
+
+    it "accepts URLs at exactly 2048 characters" do
+      url_at_limit = "https://example.com/" + "a" * (2048 - "https://example.com/".length)
+      url = build(:url, target_url: url_at_limit)
+      expect(url).to be_valid
+    end
+
+    it "accepts URLs with unicode paths" do
+      url = build(:url, target_url: "https://example.com/café/naïve")
+      expect(url).to be_valid
+    end
+
+    it "accepts URLs with query params and fragments" do
+      url = build(:url, target_url: "https://example.com/search?q=hello+world&page=1#results")
+      expect(url).to be_valid
+    end
+
+    it "accepts URLs with encoded special characters" do
+      url = build(:url, target_url: "https://example.com/path%20with%20spaces?key=val%26ue")
+      expect(url).to be_valid
+    end
+
     describe "embedded credentials" do
       it "rejects URLs with user:pass" do
         url = build(:url, target_url: "http://user:pass@example.com/path")

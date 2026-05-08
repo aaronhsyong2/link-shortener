@@ -10,7 +10,7 @@ class Url < ApplicationRecord
 
   after_update_commit :broadcast_title, if: -> { saved_change_to_title? && title.present? }
 
-  validates :target_url, presence: true, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: "must be a valid HTTP or HTTPS URL" }
+  validates :target_url, presence: true, length: { maximum: 2048, message: "is too long (maximum is 2048 characters)" }, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: "must be a valid HTTP or HTTPS URL" }
   validate :reject_embedded_credentials
   validate :reject_private_ip
   validate :reject_self_referential

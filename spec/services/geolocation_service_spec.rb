@@ -49,6 +49,38 @@ RSpec.describe GeolocationService, type: :model do
       expect(result[:country]).to eq("Unknown")
       expect(result[:city]).to eq("Unknown")
     end
+
+    it "returns Unknown on malformed JSON response" do
+      stub_request(:get, "https://ipinfo.io/8.8.8.8/json")
+        .to_return(status: 200, body: "not valid json{{{", headers: { "Content-Type" => "application/json" })
+
+      result = described_class.call("8.8.8.8")
+      expect(result[:country]).to eq("Unknown")
+      expect(result[:city]).to eq("Unknown")
+    end
+
+    it "falls back to Unknown when JSON fields are missing" do
+      stub_request(:get, "https://ipinfo.io/8.8.8.8/json")
+        .to_return(status: 200, body: { ip: "8.8.8.8" }.to_json, headers: { "Content-Type" => "application/json" })
+
+      result = described_class.call("8.8.8.8")
+      expect(result[:country]).to eq("Unknown")
+      expect(result[:city]).to eq("Unknown")
+    end
+
+    it "returns Unknown for invalid IP format" do
+      result = described_class.call("not-an-ip")
+      expect(result[:country]).to eq("Unknown")
+      expect(result[:city]).to eq("Unknown")
+    end
+
+    it "returns Unknown on connection refused" do
+      stub_request(:get, "https://ipinfo.io/8.8.8.8/json").to_raise(Errno::ECONNREFUSED)
+
+      result = described_class.call("8.8.8.8")
+      expect(result[:country]).to eq("Unknown")
+      expect(result[:city]).to eq("Unknown")
+    end
   end
 
   describe "subnet caching" do

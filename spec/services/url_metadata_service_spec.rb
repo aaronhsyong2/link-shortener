@@ -71,5 +71,57 @@ RSpec.describe UrlMetadataService, type: :model do
       title = described_class.call("https://example.com")
       expect(title.length).to eq(255)
     end
+
+    it "returns nil when HTML has no title tag" do
+      stub_request(:get, "https://example.com")
+        .to_return(
+          status: 200,
+          body: "<html><head></head><body>No title here</body></html>",
+          headers: { "Content-Type" => "text/html" }
+        )
+
+      title = described_class.call("https://example.com")
+      expect(title).to be_nil
+    end
+
+    it "returns empty string for whitespace-only title tag" do
+      stub_request(:get, "https://example.com")
+        .to_return(
+          status: 200,
+          body: "<html><head><title>   </title></head></html>",
+          headers: { "Content-Type" => "text/html" }
+        )
+
+      title = described_class.call("https://example.com")
+      expect(title).to eq("")
+    end
+
+    it "returns nil when redirect limit is exhausted" do
+      stub_request(:get, "https://example.com")
+        .to_return(status: 301, headers: { "Location" => "https://example.com/a" })
+      stub_request(:get, "https://example.com/a")
+        .to_return(status: 301, headers: { "Location" => "https://example.com/b" })
+      stub_request(:get, "https://example.com/b")
+        .to_return(status: 301, headers: { "Location" => "https://example.com/c" })
+      stub_request(:get, "https://example.com/c")
+        .to_return(status: 301, headers: { "Location" => "https://example.com/d" })
+
+      title = described_class.call("https://example.com")
+      expect(title).to be_nil
+    end
+
+    it "handles relative redirect Location headers" do
+      stub_request(:get, "https://example.com")
+        .to_return(status: 301, headers: { "Location" => "/new-page" })
+      stub_request(:get, "https://example.com/new-page")
+        .to_return(
+          status: 200,
+          body: "<html><head><title>Relative Redirect</title></head></html>",
+          headers: { "Content-Type" => "text/html" }
+        )
+
+      title = described_class.call("https://example.com")
+      expect(title).to eq("Relative Redirect")
+    end
   end
 end
