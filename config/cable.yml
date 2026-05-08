@@ -5,6 +5,6 @@ test:
   adapter: test
 
 production:
-  adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  adapter: <%= ENV.fetch("REDIS_URL", nil) ? "redis" : "async" %>
+  url: <%= ENV.fetch("REDIS_URL", "redis://localhost:6379/1") %>
   channel_prefix: link_shortener_production

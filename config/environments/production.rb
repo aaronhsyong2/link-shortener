@@ -64,8 +64,9 @@ Rails.application.configure do
   # want to log everything, set the level to "debug".
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
-  # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
+  # In-memory cache for single-process deploys (geo caching, rate limiting).
+  # Switch to :redis_cache_store if scaling to multiple processes.
+  config.cache_store = :memory_store, { size: 32.megabytes }
 
   # Solid Queue for dedicated worker; async for single-process deploys (free tier)
   config.active_job.queue_adapter = ENV.fetch("JOB_ADAPTER", "async").to_sym
