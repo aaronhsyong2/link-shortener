@@ -51,6 +51,23 @@ RSpec.describe FetchTitleJob, type: :job do
       expect(url.title).to be_nil
     end
 
+    it "calls HTTP service before DB lookup" do
+      url = create(:url, title: nil)
+      call_order = []
+
+      allow(UrlMetadataService).to receive(:call) do |_target_url|
+        call_order << :http
+        "Title"
+      end
+      allow(Url).to receive(:find_by) do |**_args|
+        call_order << :db
+        url
+      end
+
+      described_class.new.perform(url.id, url.target_url)
+      expect(call_order).to eq([ :http, :db ])
+    end
+
     it "broadcasts title update via Turbo Stream" do
       url = create(:url, title: nil)
       stub_request(:get, url.target_url)

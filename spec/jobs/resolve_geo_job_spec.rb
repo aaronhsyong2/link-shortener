@@ -50,6 +50,23 @@ RSpec.describe ResolveGeoJob, type: :job do
       expect(visit.city).to eq("Unknown")
     end
 
+    it "calls HTTP service before DB lookup" do
+      visit = create(:visit, country: nil, city: nil, ip_address: "8.8.8.8")
+      call_order = []
+
+      allow(GeolocationService).to receive(:call) do |_ip|
+        call_order << :http
+        { country: "US", city: "NYC" }
+      end
+      allow(Visit).to receive(:find_by) do |**_args|
+        call_order << :db
+        visit
+      end
+
+      described_class.new.perform(visit.id, visit.ip_address)
+      expect(call_order).to eq([ :http, :db ])
+    end
+
     it "broadcasts geo update on success" do
       visit = create(:visit, country: nil, city: nil, ip_address: "8.8.8.8")
       stub_request(:get, "https://ipinfo.io/8.8.8.8/json")
