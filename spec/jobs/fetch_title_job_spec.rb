@@ -14,25 +14,29 @@ RSpec.describe FetchTitleJob, type: :job do
           headers: { "Content-Type" => "text/html" }
         )
 
-      described_class.new.perform(url.id)
+      described_class.new.perform(url.id, url.target_url)
       expect(url.reload.title).to eq("Fetched Title")
     end
 
     it "skips if url already has a title" do
       url = create(:url, title: "Existing")
-      described_class.new.perform(url.id)
+      stub_request(:get, url.target_url)
+        .to_return(status: 200, body: "<html><head><title>New Title</title></head></html>", headers: { "Content-Type" => "text/html" })
+
+      described_class.new.perform(url.id, url.target_url)
       expect(url.reload.title).to eq("Existing")
     end
 
     it "skips if url no longer exists" do
-      expect { described_class.new.perform(999999) }.not_to raise_error
+      stub_request(:get, "https://gone.example.com").to_return(status: 200, body: "<html><head><title>Gone</title></head></html>", headers: { "Content-Type" => "text/html" })
+      expect { described_class.new.perform(999999, "https://gone.example.com") }.not_to raise_error
     end
 
     it "sets title_fetched_at even when fetch returns nil" do
       url = create(:url, title: nil)
       stub_request(:get, url.target_url).to_timeout
 
-      described_class.new.perform(url.id)
+      described_class.new.perform(url.id, url.target_url)
       url.reload
       expect(url.title).to be_nil
       expect(url.title_fetched_at).to be_present
@@ -42,7 +46,7 @@ RSpec.describe FetchTitleJob, type: :job do
       url = create(:url, title: nil)
       allow(UrlMetadataService).to receive(:call).and_raise(StandardError, "connection reset")
 
-      expect { described_class.new.perform(url.id) }.not_to raise_error
+      expect { described_class.new.perform(url.id, url.target_url) }.not_to raise_error
       expect(url.reload.title_fetched_at).to be_present
       expect(url.title).to be_nil
     end
@@ -57,7 +61,7 @@ RSpec.describe FetchTitleJob, type: :job do
         )
 
       assert_broadcasts("url_titles", 1) do
-        described_class.new.perform(url.id)
+        described_class.new.perform(url.id, url.target_url)
       end
     end
   end

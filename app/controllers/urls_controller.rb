@@ -19,7 +19,7 @@ class UrlsController < ApplicationController
   # POST /urls
   def create
     @url = UrlShortenerService.call(target_url: url_params[:target_url])
-    FetchTitleJob.perform_later(@url.id)
+    FetchTitleJob.perform_later(@url.id, @url.target_url)
     track_recent_url(@url.id)
 
     redirect_to @url, notice: "Short URL created successfully."

@@ -3,7 +3,7 @@ module Api
     class UrlsController < BaseController
       def create
         url = UrlShortenerService.call(target_url: url_params[:target_url])
-        FetchTitleJob.perform_later(url.id)
+        FetchTitleJob.perform_later(url.id, url.target_url)
 
         render json: url_response(url), status: :created
       end

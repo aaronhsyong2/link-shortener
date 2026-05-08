@@ -28,7 +28,7 @@ class RedirectsController < ApplicationController
       visited_at: Time.current
     )
 
-    ResolveGeoJob.perform_later(visit.id)
+    ResolveGeoJob.perform_later(visit.id, visit.ip_address)
   end
 
   def parse_user_agent(ua_string)
