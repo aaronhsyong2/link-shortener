@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.2.3"
+gem "rails", "~> 8.1.3"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 # Use postgresql as the database for Active Record
@@ -75,7 +75,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   # Pinned: selenium-webdriver 4.41+ has syntax incompatible with Ruby 3.3.0
-  gem "selenium-webdriver", "~> 4.27.0"
+  gem "selenium-webdriver", "~> 4.45.0"
 
   # Stub HTTP requests in tests [https://github.com/bblimke/webmock]
   gem "webmock"
